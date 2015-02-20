@@ -75,10 +75,12 @@ class Galtica {
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
-        $this->define_menus();
+        /*$this->define_menus();
         $this->register_galtica_cpt();
         $this->register_galtica_metabox();
-        $this->saver_galtica_cpt();
+        $this->saver_galtica_cpt();*/
+		$this->register_galtica_cpt_simple_content();
+
 
 	}
 
@@ -199,6 +201,17 @@ class Galtica {
 
         $this->loader->add_action( 'init', $plugin_admin, 'init_galtica_cpt'  );
     }
+
+	/**
+	 * Register custom post type - Conteúdo Simples
+	 *
+	 */
+	public function register_galtica_cpt_simple_content(){
+
+		$plugin_admin = new Galtica_Admin( $this->get_plugin_name(), $this->get_version() );
+
+		$this->loader->add_action( 'init', $plugin_admin, 'galtica_cpt_simple_content'  );
+	}
 
     /**
      * Register our Galtica custom metabox of data

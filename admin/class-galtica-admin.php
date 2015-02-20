@@ -623,4 +623,43 @@ class Galtica_Admin {
     }
 
 
+	public function galtica_cpt_simple_content() {
+
+		$labels = array(
+			'name'               => _x( 'Conteúdos Simples', 'post type general name' ),
+			'singular_name'      => _x( 'Conteúdo Simples', 'post type singular name' ),
+			'menu_name'          => _x( 'Conteúdo Simples', 'admin menu' ),
+			'add_new'            => __( 'Criar novo conteúdo simples' ),
+			'add_new_item'       => __( 'Criar novo conteúdo simples' ),
+			'new_item'           => __( 'Novo conteúdo simples' ),
+			'edit_item'          => __( 'Editar' ),
+			'view_item'          => __( 'Ver conteúdo simples' ),
+			'all_items'          => __( 'Todos os conteúdos simples' ),
+			'search_items'       => __( 'Buscar conteúdos simples' ),
+			'parent_item_colon'  => __( '' ),
+			'not_found'          => __( 'Conteúdo simples não encontrado' ),
+			'not_found_in_trash' => __( 'Nenhum conteúdos simples encontrado na lixeira' )
+		);
+
+		$args = array(
+			'labels'             => $labels,
+			'public'             => true,
+			'publicly_queryable' => true,
+			'show_ui'            => true,
+			'show_in_menu'       => true,
+			'query_var'          => true,
+			'rewrite'            => true,
+			'capability_type'    => 'post',
+			'has_archive'        => true,
+			'hierarchical'       => false,
+			'menu_position'      => null,
+			'supports'           => array( 'title' )
+		);
+		// register_post_type('conteudo_simples', $args);
+
+		require_once plugin_dir_path( __FILE__ ) . 'import/galtica-cpt-conteudo-simples.php';
+		$init_cpt = new Galdar_CPT_Conteudo_Simples;
+		$init_cpt->register_galtica_cpt();
+	}
+
 }

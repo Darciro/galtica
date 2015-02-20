@@ -33,9 +33,16 @@ class Galtica_Activator {
         /**
          * Detect if ACF plugin is active
          */
-        if ( !is_plugin_active( 'advanced-custom-fields/acf.php' ) ) {
-            $pluginNotFound = 'O Plugin Galtica necessita do plugin <a href="http://www.advancedcustomfields.com/" target="_blank">Advanced Custom Fields</a> ativo para funcionar normalmente.';
-            die($pluginNotFound);
+        if ( is_plugin_active( 'advanced-custom-fields/acf.php' ) || is_plugin_active( 'advanced-custom-fields-pro/acf.php' ) ) {
+
+        }else{
+	        $plugin_dir = ABSPATH . 'wp-content/plugins/advanced-custom-fields';
+	        $plugin_dir_pro = ABSPATH . 'wp-content/plugins/advanced-custom-fields-pro';
+	        if( file_exists($plugin_dir) || file_exists($plugin_dir_pro) ){
+		        die('Ative o plugin Advanced Custom Fields');
+	        }
+	        $pluginNotFound = 'Galtica necessita do plugin <a href="http://www.advancedcustomfields.com/" target="_blank">Advanced Custom Fields</a> ativo para funcionar normalmente.';
+	        die($pluginNotFound);
         }
     }
 
