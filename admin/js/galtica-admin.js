@@ -1,32 +1,21 @@
 (function( $ ) {
 	'use strict';
 
-	/**
-	 * All of the code for your Dashboard-specific JavaScript source
-	 * should reside in this file.
-	 *
-	 * Note that this assume you're going to use jQuery, so it prepares
-	 * the $ function reference to be used within the scope of this
-	 * function.
-	 *
-	 * From here, you're able to define handlers for when the DOM is
-	 * ready:
-	 *
-	 * $(function() {
-	 *
-	 * });
-	 *
-	 * Or when the window is loaded:
-	 *
-	 * $( window ).load(function() {
-	 *
-	 * });
-	 *
-	 * ...and so on.
-	 *
-	 * Remember that ideally, we should not attach any more than a single DOM-ready or window-load handler
-	 * for any particular page. Though other scripts in WordPress core, other plugins, and other themes may
-	 * be doing this, we should try to minimize doing that in our own work.
-	 */
+	console.log('Loaded!');
+
+    $('a.acf-fc-add').click(function(){
+        console.log('clicked!');
+    });
+
+    /*if( $('.acf-fc-popup ul li').attr('data-layout') == 'conteudo_simples' ){
+        $(this).find('a').text('PORRAAA!!!!');
+    }*/
+
+    var cpt = 'conteudo_simples'
+    $('.acf-fc-popup ul li a').find("a[data-layout='" + cpt + "']").css('background', 'red');
+    $('.acf-fc-popup ul li a:eq(1)').replaceWith('PORRRAAA')
+    if( $('.acf-fc-popup').is(":visible") ){
+        $('.acf-fc-popup').find('ul li a:eq(1)').text('PORRRAAA');
+    }
 
 })( jQuery );

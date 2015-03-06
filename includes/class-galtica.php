@@ -75,12 +75,14 @@ class Galtica {
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
-        /*$this->define_menus();
-        $this->register_galtica_cpt();
-        $this->register_galtica_metabox();
-        $this->saver_galtica_cpt();*/
+        $this->define_menus();
+		$this->define_galtica_settings();
+        $this->galtica_filter_cpt();
+		/*$this->register_galtica_cpt();
+		$this->register_galtica_metabox();
+		$this->saver_galtica_cpt();*/
 		$this->register_galtica_cpt_simple_content();
-
+		$this->define_content_filter();
 
 	}
 
@@ -179,6 +181,18 @@ class Galtica {
 
 	}
 
+	/**
+	 * Register filter into the content
+	 *
+	 */
+	private function define_content_filter() {
+
+		$plugin_public = new Galtica_Public( $this->get_plugin_name(), $this->get_version() );
+
+		$this->loader->add_filter( 'the_content', $plugin_public, 'register_content_filter' );
+
+	}
+
     /**
      * Define menu and pages
      *
@@ -188,6 +202,24 @@ class Galtica {
         $plugin_admin = new Galtica_Admin( $this->get_plugin_name(), $this->get_version() );
 
         $this->loader->add_action( 'admin_menu', $plugin_admin, 'register_galtica_menu_page'  );
+    }
+
+	/**
+	 * Register our settings
+	 *
+	 */
+	public function define_galtica_settings(){
+
+		$plugin_admin = new Galtica_Admin( $this->get_plugin_name(), $this->get_version() );
+
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'register_galtica_settings'  );
+	}
+
+    public function galtica_filter_cpt(){
+        $plugin_admin = new Galtica_Admin( $this->get_plugin_name(), $this->get_version() );
+
+        $this->loader->add_filter('acf/load_field/name=galtica_cpt_content', $plugin_admin, 'galtica_filter_acf');
+        // $this->loader->add_filter('acf/load_field/name=subnome_para_teste', $plugin_admin, 'galtica_filter_acf');
     }
 
     /**

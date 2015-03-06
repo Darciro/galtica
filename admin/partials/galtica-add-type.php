@@ -15,5 +15,5 @@
 
 <div class="wrap">
     <div id="icon-edit" class="icon32"></div>
-    <h2>Add</h2>
+    <h2>Add-ons</h2>
 </div>

@@ -108,11 +108,100 @@ class Galtica_Admin {
     public function register_galtica_menu_page() {
 
         // add_menu_page( $page_title, $menu_title, $capability, $menu_slug, $function, $icon_url, $position );
-        add_menu_page( 'Galtica', 'Galtica','manage_options', 'galtica/admin/partials/galtica-admin-display.php', '', 'dashicons-admin-generic', 15);
+        add_menu_page( 'Galtica', 'Galtica','manage_options', 'galtica/admin/partials/galtica-admin-display.php', '', 'dashicons-welcome-widgets-menus', 21);
 
-        // add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, $function );
-        // add_submenu_page( 'galtica/admin/partials/galtica-admin-display.php', 'Adicionar Tipo de Conteúdo', 'Novo Tipo de Conteúdo', 'manage_options', 'galtica/admin/partials/galtica-add-type.php', '' );
+        // add_submenu_page( 'galtica/admin/partials/galtica-admin-display.php', 'Add-ons', 'Add-on', 'manage_options', 'galtica/admin/partials/galtica-add-type.php', '' );
 
+    }
+
+	/**
+	 * Register our settings
+	 *
+	 */
+	public function register_galtica_settings() {
+		register_setting( 'galtica-settings-group', 'galtica-activate_conteudo_simples' );
+		register_setting( 'galtica-settings-group', 'galtica-activate_conteudo_colunas' );
+		register_setting( 'galtica-settings-group', 'galtica-activate_galeria_de_midia' );
+		register_setting( 'galtica-settings-group', 'galtica-activate_lista' );
+		register_setting( 'galtica-settings-group', 'galtica-activate_accordion' );
+		register_setting( 'galtica-settings-group', 'galtica-activate_topo' );
+
+        // Check for addons and register them into admin_init hook
+        $check_addon = get_option('galtica_addon');
+        if($check_addon){
+            global $wpdb;
+            $results = $wpdb->get_results("SELECT * FROM wp_options WHERE option_name LIKE 'galtica_addon_%'", ARRAY_A);
+            foreach($results as $i => $result){
+                $option_unserialized = unserialize(unserialize($result['option_value']));
+
+                register_setting( 'galtica-settings-group', $option_unserialized['name'] );
+            }
+        }
+	}
+
+	public function register_galtica_addons_settings($addons_arr){
+
+	}
+
+
+    public function galtica_filter_acf($field){
+        $default_cpt = array(
+	        'conteudo_simples',
+	        'conteudo_colunas',
+	        'galeria_de_midia',
+	        'lista',
+	        'accordion',
+	        'topo',
+        );
+        $enables = array();
+        $addons = array();
+        $activate_conteudo_simples  = ( get_option('galtica-activate_conteudo_simples') == 'on' ? true : false);
+        if($activate_conteudo_simples){
+            array_push($enables, 'conteudo_simples');
+        }
+        $activate_conteudo_colunas  = ( get_option('galtica-activate_conteudo_colunas') == 'on' ? true : false);
+        if($activate_conteudo_colunas){
+            array_push($enables, 'conteudo_colunas');
+        }
+        $activate_galeria_de_midia  = ( get_option('galtica-activate_galeria_de_midia') == 'on' ? true : false);
+        if($activate_galeria_de_midia){
+            array_push($enables, 'galeria_de_midia');
+        }
+        $activate_lista             = ( get_option('galtica-activate_lista') == 'on' ? true : false);
+        if($activate_lista){
+            array_push($enables, 'lista');
+        }
+        $activate_accordion         = ( get_option('galtica-activate_accordion') == 'on' ? true : false);
+        if($activate_accordion){
+            array_push($enables, 'accordion');
+        }
+        $activate_topo              = ( get_option('galtica-activate_topo') == 'on' ? true : false);
+        if($activate_topo){
+            array_push($enables, 'topo');
+        }
+
+        foreach ($field['layouts'] as $index => $value) {
+	        if( !in_array($value['name'], $default_cpt) ){
+		        // echo $value['name'] . ' Its an add-on <br/>';
+		        array_push($addons,'galtica-activate_' . $value['name']);
+                $activate_addon = ( get_option('galtica-activate_' . $value['name'] ) == 'on' ? true : false);
+                if($activate_addon){
+                    array_push($enables, $value['name']);
+                }
+	        }
+        }
+
+	    // var_dump($addons);
+
+	    foreach ($field['layouts'] as $index => $value) {
+		    // echo ($index + 1) . '. ' . $value['label'] . '(' . $value['name'] . '),' . '<br/>';
+		    // Insert in the list for enable/disable
+		    if( !in_array($value['name'], $enables) ){
+			    unset($field['layouts'][$index]);
+		    }
+	    }
+        // echo "<!--<pre>"; var_dump($field); echo "</pre>-->";
+        return $field;
     }
 
     /**
@@ -657,7 +746,7 @@ class Galtica_Admin {
 		);
 		// register_post_type('conteudo_simples', $args);
 
-		require_once plugin_dir_path( __FILE__ ) . 'import/galtica-cpt-conteudo-simples.php';
+		require_once plugin_dir_path( __FILE__ ) . 'import/galtica-cpt-content.php';
 		$init_cpt = new Galdar_CPT_Conteudo_Simples;
 		$init_cpt->register_galtica_cpt();
 	}

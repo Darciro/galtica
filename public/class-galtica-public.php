@@ -100,4 +100,38 @@ class Galtica_Public {
 
 	}
 
+	public function register_content_filter() {
+		$content = '';
+
+
+
+		// check if the flexible content field has rows of data
+		if( have_rows('galtica_cpt_content') ):
+
+			// loop through the rows of data
+			while ( have_rows('galtica_cpt_content') ) : the_row();
+
+				if( get_row_layout() == 'conteudo_simples' ):
+
+					require( 'partials/galtica-cpt-conteudo_simples.php' );
+
+				elseif( get_row_layout() == 'download' ):
+
+					$file = get_sub_field('file');
+
+				endif;
+
+			endwhile;
+
+		else :
+
+			// no layouts found
+
+		endif;
+
+		// Returns the content.
+		return $content;
+
+	}
+
 }
